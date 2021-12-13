@@ -2,7 +2,7 @@
 #define PAN_H
 
 #define SpinVersion	"Spin Version 6.5.2 -- 6 December 2019"
-#define PanSource	"payment-distribution-system2.pml"
+#define PanSource	"payment-distribution-system.pml"
 
 #define G_long	8
 #define G_int	4
@@ -17,7 +17,7 @@
 #endif
 
 #ifdef BFS_PAR
-	#define NRUNS	0
+	#define NRUNS	1
 	#ifndef BFS
 		#define BFS
 	#endif
@@ -102,6 +102,9 @@
 #ifndef NFAIR
 	#define NFAIR	2	/* must be >= 2 */
 #endif
+#define ETIM	4
+#define REM_REFS	45
+#define HAS_LTL	1
 #define HAS_CODE	1
 #if defined(RANDSTORE) && !defined(RANDSTOR)
 	#define RANDSTOR	RANDSTORE
@@ -120,10 +123,16 @@
 #endif
 #ifdef NP
 	#define HAS_NP	2
-	#define VERI	5	/* np_ */
+	#define VERI	9	/* np_ */
 #endif
 #if defined(NOCLAIM) && defined(NP)
 	#undef NOCLAIM
+#endif
+#ifndef NOCLAIM
+	#define NCLAIMS	3
+	#ifndef NP
+		#define VERI	8
+	#endif
 #endif
 
 typedef struct S_F_MAP {
@@ -132,45 +141,73 @@ typedef struct S_F_MAP {
 	int upto;
 } S_F_MAP;
 
-#define _nstates4	24	/* payment_point_service */
-#define minseq4	65
-#define maxseq4	87
-#define _endstate4	23
+#define _nstates8	45	/* p3 */
+#define minseq8	328
+#define maxseq8	371
+#define _endstate8	44
 
-#define _nstates3	22	/* payment_card_service */
-#define minseq3	44
-#define maxseq3	64
-#define _endstate3	21
+#define _nstates7	19	/* p2 */
+#define minseq7	310
+#define maxseq7	327
+#define _endstate7	18
 
-#define _nstates2	9	/* network_from_payment_to_point */
-#define minseq2	36
-#define maxseq2	43
-#define _endstate2	8
+#define _nstates6	14	/* p1 */
+#define minseq6	297
+#define maxseq6	309
+#define _endstate6	13
 
-#define _nstates1	9	/* network_from_payment_to_card */
-#define minseq1	28
-#define maxseq1	35
-#define _endstate1	8
+#define _nstates5	3	/* :init: */
+#define minseq5	295
+#define maxseq5	296
+#define _endstate5	2
 
-#define _nstates0	29	/* payment_service */
+#define _nstates4	54	/* payment_point_service */
+#define minseq4	242
+#define maxseq4	294
+#define _endstate4	53
+
+#define _nstates3	52	/* payment_card_service */
+#define minseq3	191
+#define maxseq3	241
+#define _endstate3	51
+
+#define _nstates2	11	/* network_from_payment_to_point */
+#define minseq2	181
+#define maxseq2	190
+#define _endstate2	10
+
+#define _nstates1	11	/* network_from_payment_to_card */
+#define minseq1	171
+#define maxseq1	180
+#define _endstate1	10
+
+#define _nstates0	172	/* payment_service */
 #define minseq0	0
-#define maxseq0	27
-#define _endstate0	28
+#define maxseq0	170
+#define _endstate0	171
 
+extern short src_ln8[];
+extern short src_ln7[];
+extern short src_ln6[];
+extern short src_ln5[];
 extern short src_ln4[];
 extern short src_ln3[];
 extern short src_ln2[];
 extern short src_ln1[];
 extern short src_ln0[];
+extern S_F_MAP src_file8[];
+extern S_F_MAP src_file7[];
+extern S_F_MAP src_file6[];
+extern S_F_MAP src_file5[];
 extern S_F_MAP src_file4[];
 extern S_F_MAP src_file3[];
 extern S_F_MAP src_file2[];
 extern S_F_MAP src_file1[];
 extern S_F_MAP src_file0[];
 
-#define T_ID	unsigned char
-#define _T5	62
-#define _T2	63
+#define T_ID	unsigned short
+#define _T5	212
+#define _T2	213
 #define WS		8 /* word size in bytes */
 #define SYNC	0
 #define ASYNC	8
@@ -185,15 +222,56 @@ extern S_F_MAP src_file0[];
 	#endif
 #endif
 
-#define Ppayment_point_service	((P4 *)_this)
-typedef struct P4 { /* payment_point_service */
+typedef struct P8 { /* p3 */
 	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 4; /* proctype */
-	unsigned _p   : 6; /* state    */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-	unsigned r : 1;
+} P8;
+#define Air8	(sizeof(P8) - 3)
+
+typedef struct P7 { /* p2 */
+	unsigned _pid : 8;  /* 0..255 */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
+#ifdef HAS_PRIORITY
+	unsigned _priority : 8; /* 0..255 */
+#endif
+} P7;
+#define Air7	(sizeof(P7) - 3)
+
+typedef struct P6 { /* p1 */
+	unsigned _pid : 8;  /* 0..255 */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
+#ifdef HAS_PRIORITY
+	unsigned _priority : 8; /* 0..255 */
+#endif
+} P6;
+#define Air6	(sizeof(P6) - 3)
+
+#define Pinit	((P5 *)_this)
+typedef struct P5 { /* :init: */
+	unsigned _pid : 8;  /* 0..255 */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
+#ifdef HAS_PRIORITY
+	unsigned _priority : 8; /* 0..255 */
+#endif
+} P5;
+#define Air5	(sizeof(P5) - 3)
+
+#define Ppayment_point_service	((P4 *)_this)
+typedef struct P4 { /* payment_point_service */
+	unsigned _pid : 8;  /* 0..255 */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
+#ifdef HAS_PRIORITY
+	unsigned _priority : 8; /* 0..255 */
+#endif
+	uchar r;
 	uchar t;
 } P4;
 #define Air4	(sizeof(P4) - Offsetof(P4, t) - 1*sizeof(uchar))
@@ -201,12 +279,12 @@ typedef struct P4 { /* payment_point_service */
 #define Ppayment_card_service	((P3 *)_this)
 typedef struct P3 { /* payment_card_service */
 	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 4; /* proctype */
-	unsigned _p   : 6; /* state    */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-	unsigned r : 1;
+	uchar r;
 	uchar t;
 } P3;
 #define Air3	(sizeof(P3) - Offsetof(P3, t) - 1*sizeof(uchar))
@@ -214,13 +292,13 @@ typedef struct P3 { /* payment_card_service */
 #define Pnetwork_from_payment_to_point	((P2 *)_this)
 typedef struct P2 { /* network_from_payment_to_point */
 	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 4; /* proctype */
-	unsigned _p   : 6; /* state    */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-	unsigned r : 1;
-	uchar c;
+	uchar r;
+	uchar t;
 	uchar m;
 } P2;
 #define Air2	(sizeof(P2) - Offsetof(P2, m) - 1*sizeof(uchar))
@@ -228,13 +306,13 @@ typedef struct P2 { /* network_from_payment_to_point */
 #define Pnetwork_from_payment_to_card	((P1 *)_this)
 typedef struct P1 { /* network_from_payment_to_card */
 	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 4; /* proctype */
-	unsigned _p   : 6; /* state    */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-	unsigned r : 1;
-	uchar c;
+	uchar r;
+	uchar t;
 	uchar m;
 } P1;
 #define Air1	(sizeof(P1) - Offsetof(P1, m) - 1*sizeof(uchar))
@@ -242,30 +320,42 @@ typedef struct P1 { /* network_from_payment_to_card */
 #define Ppayment_service	((P0 *)_this)
 typedef struct P0 { /* payment_service */
 	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 4; /* proctype */
-	unsigned _p   : 6; /* state    */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-	unsigned r : 1;
-	uchar cnt1;
-	uchar cnt2;
+	uchar r;
 } P0;
-#define Air0	(sizeof(P0) - Offsetof(P0, cnt2) - 1*sizeof(uchar))
+#define Air0	(sizeof(P0) - Offsetof(P0, r) - 1*sizeof(uchar))
 
-typedef struct P5 { /* np_ */
+typedef struct P9 { /* np_ */
 	unsigned _pid : 8;  /* 0..255 */
-	unsigned _t   : 4; /* proctype */
-	unsigned _p   : 6; /* state    */
+	unsigned _t   : 5; /* proctype */
+	unsigned _p   : 9; /* state    */
 #ifdef HAS_PRIORITY
 	unsigned _priority : 8; /* 0..255 */
 #endif
-} P5;
-#define Air5	(sizeof(P5) - 3)
+} P9;
+#define Air9	(sizeof(P9) - 3)
 
-#define Pclaim	P0
-#ifndef NCLAIMS
-	#define NCLAIMS 1
+
+#ifndef NOCLAIM
+ #ifndef NP
+	#undef VERI
+	#define VERI	10
+ #endif
+	#define Pclaim	P10
+
+typedef struct P10 {
+	unsigned _pid : 8; /* always zero */
+	unsigned _t   : 5; /* active-claim type  */
+	unsigned _p   : 9; /* active-claim state */
+	unsigned _n   : 3; /* active-claim index */
+	uchar c_cur[NCLAIMS]; /* claim-states */
+} P10;
+	#define Air10	(0)
+
 #endif
 #if defined(BFS) && defined(REACH)
 	#undef REACH
@@ -453,14 +543,14 @@ typedef struct State {
 		unsigned short _event;
 	#endif
 #endif
-	unsigned ct0 : 1;
-	unsigned ct1 : 1;
-	unsigned ct2 : 1;
-	unsigned pt0 : 1;
-	unsigned pt1 : 1;
-	unsigned pt2 : 1;
-	uchar tran1;
-	uchar tran2;
+	uchar ct0;
+	uchar ct1;
+	uchar ct2;
+	uchar pt0;
+	uchar pt1;
+	uchar pt2;
+	uchar tran;
+	uchar type;
 	uchar t0_balance;
 	uchar cable1_s_out;
 	uchar cable1_s_in;
@@ -494,20 +584,24 @@ typedef struct TRIX_v6 {
 #define FORWARD_MOVES	"pan.m"
 #define BACKWARD_MOVES	"pan.b"
 #define TRANSITIONS	"pan.t"
-#define _NP_	5
-#define _nstates5	3 /* np_ */
-#define _endstate5	2 /* np_ */
+#define _NP_	9
+#define _nstates9	3 /* np_ */
+#define _endstate9	2 /* np_ */
 
-#define _start5	0 /* np_ */
+#define _start9	0 /* np_ */
+#define _start8	11
+#define _start7	6
+#define _start6	5
+#define _start5	1
 #define _start4	1
 #define _start3	1
-#define _start2	5
-#define _start1	5
-#define _start0	25
+#define _start2	7
+#define _start1	7
+#define _start0	1
 #ifdef NP
 	#define ACCEPT_LAB	1 /* at least 1 in np_ */
 #else
-	#define ACCEPT_LAB	0 /* user-defined accept labels */
+	#define ACCEPT_LAB	3 /* user-defined accept labels */
 #endif
 #ifdef MEMCNT
 	#ifdef MEMLIM
@@ -535,7 +629,7 @@ typedef struct TRIX_v6 {
 #if NCORE>1 && !defined(MEMLIM)
 	#define MEMLIM	(2048)	/* need a default, using 2 GB */
 #endif
-#define PROG_LAB	0 /* progress labels */
+#define PROG_LAB	7 /* progress labels */
 #define NQS	8
 typedef struct Q8 {
 	uchar Qlen;	/* q_size */
@@ -543,7 +637,7 @@ typedef struct Q8 {
 	struct {
 		uchar fld0;
 		uchar fld1;
-		unsigned fld2 : 1;
+		uchar fld2;
 	} contents[1];
 } Q8;
 typedef struct Q7 {
@@ -552,6 +646,7 @@ typedef struct Q7 {
 	struct {
 		uchar fld0;
 		uchar fld1;
+		uchar fld2;
 	} contents[1];
 } Q7;
 typedef struct Q6 {
@@ -560,7 +655,7 @@ typedef struct Q6 {
 	struct {
 		uchar fld0;
 		uchar fld1;
-		unsigned fld2 : 1;
+		uchar fld2;
 	} contents[1];
 } Q6;
 typedef struct Q5 {
@@ -569,6 +664,7 @@ typedef struct Q5 {
 	struct {
 		uchar fld0;
 		uchar fld1;
+		uchar fld2;
 	} contents[1];
 } Q5;
 typedef struct Q4 {
@@ -577,7 +673,7 @@ typedef struct Q4 {
 	struct {
 		uchar fld0;
 		uchar fld1;
-		unsigned fld2 : 1;
+		uchar fld2;
 	} contents[1];
 } Q4;
 typedef struct Q3 {
@@ -586,6 +682,7 @@ typedef struct Q3 {
 	struct {
 		uchar fld0;
 		uchar fld1;
+		uchar fld2;
 	} contents[1];
 } Q3;
 typedef struct Q2 {
@@ -594,7 +691,7 @@ typedef struct Q2 {
 	struct {
 		uchar fld0;
 		uchar fld1;
-		unsigned fld2 : 1;
+		uchar fld2;
 	} contents[1];
 } Q2;
 typedef struct Q1 {
@@ -603,6 +700,7 @@ typedef struct Q1 {
 	struct {
 		uchar fld0;
 		uchar fld1;
+		uchar fld2;
 	} contents[1];
 } Q1;
 typedef struct Q0 {	/* generic q */
@@ -931,7 +1029,7 @@ void qsend(int, int, int, int, int, int);
 #define GLOBAL	7
 #define BAD	8
 #define ALPHA_F	9
-#define NTRANS	64
+#define NTRANS	214
 #if defined(BFS_PAR) || NCORE>1
 	void e_critical(int);
 	void x_critical(int);

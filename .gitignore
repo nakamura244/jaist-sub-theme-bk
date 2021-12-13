@@ -1,1 +1,11 @@
-pan*
+./pan*
+./pan
+./pan.b
+./pan.c
+./pan.h
+./pan.m
+./pan.t
+./_spin_nvr.tmp
+./*.trail
+./_bk_*.pml
+./test/*

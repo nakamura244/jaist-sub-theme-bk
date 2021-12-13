@@ -1,0 +1,56 @@
+never p1 {    /* !([] ((! ((payment_service@request))) || (<> ((payment_service@response))))) */
+T0_init:
+	do
+	:: (! ((! ((payment_service@request)))) && ! (((payment_service@response)))) -> goto accept_S4
+	:: (1) -> goto T0_init
+	od;
+accept_S4:
+	do
+	:: (! (((payment_service@response)))) -> goto accept_S4
+	od;
+}
+never p2 {    /* !((! ((payment_service@request))) || ([] (! ((payment_service@response))))) */
+T0_init:
+	do
+	:: atomic { (! ((! ((payment_service@request)))) && ! ((! ((payment_service@response))))) -> assert(!(! ((! ((payment_service@request)))) && ! ((! ((payment_service@response)))))) }
+	:: (! ((! ((payment_service@request))))) -> goto T0_S3
+	od;
+T0_S3:
+	do
+	:: atomic { (! ((! ((payment_service@response))))) -> assert(!(! ((! ((payment_service@response)))))) }
+	:: (1) -> goto T0_S3
+	od;
+accept_all:
+	skip
+}
+never p3 {    /* !([] ((! ((((payment_service@request)) && (<> ((network_from_payment_to_card@forwarded1)))) && (<> ((network_from_payment_to_card@forwarded2))))) || (<> ((payment_service@response))))) */
+T0_init:
+	do
+	:: (! (((payment_service@response))) && ((network_from_payment_to_card@forwarded1)) && ((network_from_payment_to_card@forwarded2)) && ((payment_service@request))) -> goto accept_S44
+	:: (! (((payment_service@response))) && ((network_from_payment_to_card@forwarded1)) && ((payment_service@request))) -> goto T0_S47
+	:: (! (((payment_service@response))) && ((network_from_payment_to_card@forwarded2)) && ((payment_service@request))) -> goto T0_S53
+	:: (! (((payment_service@response))) && ((payment_service@request))) -> goto T0_S58
+	:: (1) -> goto T0_init
+	od;
+accept_S44:
+	do
+	:: (! (((payment_service@response)))) -> goto accept_S44
+	od;
+T0_S47:
+	do
+	:: (! (((payment_service@response))) && ((network_from_payment_to_card@forwarded2))) -> goto accept_S44
+	:: (! (((payment_service@response)))) -> goto T0_S47
+	od;
+T0_S53:
+	do
+	:: (! (((payment_service@response))) && ((network_from_payment_to_card@forwarded1))) -> goto accept_S44
+	:: (! (((payment_service@response)))) -> goto T0_S53
+	od;
+T0_S58:
+	do
+	:: (! (((payment_service@response))) && ((network_from_payment_to_card@forwarded1)) && ((network_from_payment_to_card@forwarded2))) -> goto accept_S44
+	:: (! (((payment_service@response))) && ((network_from_payment_to_card@forwarded1))) -> goto T0_S47
+	:: (! (((payment_service@response))) && ((network_from_payment_to_card@forwarded2))) -> goto T0_S53
+	:: (! (((payment_service@response)))) -> goto T0_S58
+	od;
+}
